@@ -21,6 +21,7 @@ class Tournament {
     teams = [];         //can't be two teams with the same name!!!
     groups = [];        //important keys of array - to identify group!
     firstRound = null;  //1-final;2-semi;4-quater;8-1/16;16-1/32
+    returnGameGroup = false;
 
     //SET
     setGroupQtt(arg) {
@@ -67,7 +68,7 @@ class Tournament {
                 add = 0;
             }
             //how many teams should to be in particular group
-            let group = new Group(String.fromCharCode(65 + i), Math.floor(this.teamsQtt / this.groupsQtt) + add, this.firstRound);
+            let group = new Group(String.fromCharCode(65 + i), Math.floor(this.teamsQtt / this.groupsQtt) + add, this.firstRound, this.returnGameGroup);
             this.groups.push(group);
 
             //temp:
@@ -76,8 +77,9 @@ class Tournament {
         }
     }
 
-    constructor(teamsQtt, groupsQtt, firstRound) {
+    constructor(teamsQtt, groupsQtt, firstRound, returnGameGroup) {
         this.teamsQtt = parseInt(teamsQtt);
+        this.returnGameGroup = returnGameGroup;
         this.setGroupQtt(groupsQtt);
         this.setFirstRound(firstRound);
         this.createGroups();
@@ -106,7 +108,7 @@ class Group {
         }
     }
 
-    matchesInit() {
+    matchesInit(returnGame) {
         for (let i = 0; i < this.table.length - 1; i++) {
             for (let j = i + 1; j < this.table.length; j++) {
                 let match;
@@ -114,6 +116,17 @@ class Group {
                 match.home = this.table[i].team;
                 match.away = this.table[j].team;
                 this.matches.push(match);
+            }
+        }
+        if (returnGame) {
+            for (let i = 0; i < this.table.length - 1; i++) {
+                for (let j = i + 1; j < this.table.length; j++) {
+                    let match;
+                    match = new Match();
+                    match.home = this.table[j].team;
+                    match.away = this.table[i].team;
+                    this.matches.push(match);
+                }
             }
         }
     }
@@ -222,12 +235,12 @@ class Group {
         return promoted;
     }
 
-    constructor(name, teamsQtt, promotedQtt) {
+    constructor(name, teamsQtt, promotedQtt, returnGame) {
         this.name = name;
         this.teamsQtt = teamsQtt;
         this.promotedQtt = promotedQtt;
         this.tableInit();
-        this.matchesInit();
+        this.matchesInit(returnGame);
     }
 
     //temp
@@ -268,7 +281,8 @@ class Match {
 
     startMatch() {
         if (this.status == 2) {
-            alert('ten mecz już się zakończył!');
+            //alert('ten mecz już się zakończył!');
+            console.log('ten mecz już się zakończył!');
         } else {
             this.status = 1;
             this.result.home = 0;

@@ -47,21 +47,11 @@
             <option value="8">Finał, Półfinały, Ćwierćfinały, 1/16</option>
             <option value="16">Finał, Półfinały, Ćwierćfinały, 1/16, 1/32</option>
         </select>
-        <!-- <script>
-            var manager = new Manager();
-        </script> -->
         <a href='#' onclick="createGroup()">Dalej</a>
     </section>
 
     <section id='dashboardGroups'>
-        <!-- <ul> -->
         <!-- GIVE RIGHTS: EDIT - ALLOWS TO EDIT MATCHES/SCORE/TEAMS; OTHERS NO -->
-        <!-- <ul>
-        <li><a onclick="groupMode('teams', 'xd')">Edytuj? drużyny</a></li>
-        <li><a onclick="groupMode('table', 'cd')">Tabela</a></li>
-        <li><a onclick="groupMode('matches', 'cd')">Mecze</a></li>
-        <li><a onclick="groupMode('promote', 'ds')">Awans</a></li>
-        </ul> -->
     </section>
 
 

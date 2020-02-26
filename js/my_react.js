@@ -155,40 +155,39 @@ class MatchShow extends React.Component {
 class GroupShow extends React.Component {
     constructor(props) {
         super(props);
-        console.log('in group group: ' + this.props.group.name);
-        this.group = this.props.group
         this.state = {
             group: this.props.group,
+            mode: this.props.mode,
         }
-        //this.group = props.group;
-        this.group.tempStartEnd();
         this.rights = props.rights;
+        this.state.group.tempStartEnd();
     }
 
     setGroup() {
-        this.group = this.props.group
+        if (this.state.group != this.props.group) {
+            this.setState({ group: this.props.group });
+        }
+
+        if (this.state.mode != this.props.mode) {
+            this.setState({ mode: this.props.mode });
+        }
     }
 
     render() {
-        this.setGroup();
         //prerequisites
-        //this.group.tempStartEnd();
-        this.group.countTable();
-        //this.group.showTable();
-        //console.log('in group group: ' + this.props.group);
-        console.log('in group group: ' + this.props.group.name);
-        console.log('in group: ' + this.state.group.name);
-        switch (this.props.mode) {
+        this.setGroup();
+        this.state.group.tempStartEnd();
+        this.state.group.countTable();
+        switch (this.state.mode) {
             case 'table':
                 //TABLE
-                this.table = this.group.table.map((item, key) =>
+                this.table = this.state.group.table.map((item, key) =>
                     <tr><td>{item.team.name}</td><td>{item.points}</td><td>{item.goalsScored}</td><td>{item.goalsLost}</td></tr>
                 );
                 return (
-                    <div>
-                        <h1>{this.group.name}</h1>
+                    <div className='table'>
                         <table>
-                            <thead><tr><th>Zespół</th><th>punkty</th><th>gole strzelone</th><th>gole stracone</th></tr></thead>
+                            <thead><tr><th>Zespół</th><th>punkty</th><th>strzelone</th><th>stracone</th></tr></thead>
                             <tbody>
                                 {this.table}
                             </tbody>
@@ -198,14 +197,13 @@ class GroupShow extends React.Component {
                 break;
             case 'matches':
                 //MATCH LIST
-                this.matches = this.group.matches.map((item, key) =>
+                this.matches = this.state.group.matches.map((item, key) =>
                     <li>
                         <MatchShow match={item} rights={this.rights} />
                     </li>
                 );
                 return (
-                    <div>
-                        <h1>{this.group.name}</h1>
+                    <div className='matches'>
                         <ul>
                             {this.matches}
                         </ul>
@@ -214,13 +212,12 @@ class GroupShow extends React.Component {
                 break;
             case 'teams':
                 //TEAMS LIST
-                this.teams = this.group.table.map((item, key) =>
+                this.teams = this.state.group.table.map((item, key) =>
                     <li><TeamShow team={item.team} rights={this.rights} /></li>
                     // <input type='text' value={item.name} readOnly />
                 );
                 return (
-                    <div>
-                        <h1>{this.group.name}</h1>
+                    <div className='teams'>
                         <ul>
                             {this.teams}
                         </ul>
@@ -229,13 +226,12 @@ class GroupShow extends React.Component {
                 break;
             case 'promote':
                 //PROMOTED TEAMS
-                let arr = this.group.promoteTeams();
+                let arr = this.state.group.promoteTeams();
                 this.teams = arr.map((item, key) =>
                     <li><TeamShow team={item} rights={false} /></li>
                 );
                 return (
-                    <div>
-                        <h1>{this.group.name}</h1>
+                    <div className='promoted'>
                         <ul>
                             {this.teams}
                         </ul>
@@ -251,7 +247,7 @@ class TournamentShow extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            groupMode: 'matches',
+            groupMode: 'table',
             groupCurrent: this.props.tournament.groups[0], //current group to display - default first
             rights: this.props.rights,
         }
@@ -259,7 +255,10 @@ class TournamentShow extends React.Component {
     }
 
     changeGroup(event) {
-        this.setState({ groupCurrent: this.props.tournament.groups[event.target.value] });
+        this.setState({
+            groupCurrent: this.props.tournament.groups[event.target.value],
+            groupMode: 'table'
+        });
     }
 
     render() {
@@ -267,16 +266,16 @@ class TournamentShow extends React.Component {
         this.groups = this.props.tournament.groups.map((item, key) =>
             <option value={key}>{item.name}</option>
         );
-        console.log(this.state.groupCurrent.name);
+
         return (
             <div className="group">
-                {this.props.tournament.name}
-                {this.state.groupCurrent.name}
+                <h2>{this.props.tournament.name}</h2>
+                <h3>{this.state.groupCurrent.name}</h3>
                 <select onChange={this.changeGroup}>
                     {this.groups}
                 </select>
                 <ul>
-                    <li><a onClick={() => this.setState({ groupMode: 'teams' })}>Edytuj?s drużyny</a></li>
+                    <li><a onClick={() => this.setState({ groupMode: 'teams' })}>Drużyny</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'table' })}>Tabela</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'matches' })}>Mecze</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'promote' })}>Awans</a></li>
@@ -295,11 +294,9 @@ class ManagerShow extends React.Component {
         var no_teams = document.getElementsByName('no_teams')[0].value;
         var no_groups = document.getElementsByName('no_groups')[0].value;
         var bracketNo = document.getElementsByName('play_offs')[0].value;
-        this.tournament = new Tournament(no_teams, no_groups, bracketNo);
+        var returnGameGroup = document.getElementsByName('revange_group')[0].checked;
+        this.tournament = new Tournament(no_teams, no_groups, bracketNo, returnGameGroup);
         this.tournament.name = document.getElementsByName('name')[0].value;
-
-        // document.querySelector('.formCreation').style.display = 'none';
-        // document.querySelector('#dashboardGroup').style.display = 'block';
     }
 
 
@@ -307,9 +304,7 @@ class ManagerShow extends React.Component {
         this.groupInit();
 
         return (
-            <div className='dashboardGroup'>
-                <TournamentShow tournament={this.tournament} rights={this.rights} />
-            </div>
+            <TournamentShow tournament={this.tournament} rights={this.rights} />
         );
     }
 }
@@ -325,10 +320,3 @@ function createGroup(rights) {
         document.getElementById('dashboardGroups')
     );
 }
-
-// groupMode(mode, rights) {
-//     ReactDOM.render(
-//         <TournamentShow tournament={tournament} mode={mode} rights={rights} />,
-//         document.getElementById('my_react')
-//     );
-// }

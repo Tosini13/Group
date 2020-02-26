@@ -23,12 +23,25 @@ ul {
   padding: 0px;
 }
 
+input:focus {
+  outline: none;
+}
+
 #dashboardGroups {
   /* temp */
   height: 100vh;
 }
 
-#dashboardGroups > ul {
+#dashboardGroups .group {
+  text-align: center;
+}
+
+#dashboardGroups .group > select {
+  text-align: center;
+  width: 100%;
+}
+
+#dashboardGroups .group > ul {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -42,5 +55,42 @@ ul {
           justify-content: space-between;
   /* temp */
   border: white solid 1px;
+}
+
+#dashboardGroups .group .table table {
+  border-collapse: collapse;
+  max-width: 100%;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#dashboardGroups .group .table table td,
+#dashboardGroups .group .table table th {
+  overflow: hidden;
+  width: 60px;
+  padding: 5px;
+}
+
+#dashboardGroups .group .table table td:first-child,
+#dashboardGroups .group .table table th:first-child {
+  width: auto;
+}
+
+#dashboardGroups .group .table table td {
+  border-top: white solid 1px;
+}
+
+#dashboardGroups .group .team {
+  background-color: transparent;
+  border: #b5b5b5 solid 1px;
+  color: #b5b5b5;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}
+
+#dashboardGroups .group .teams .team:focus {
+  -webkit-box-shadow: 0px 0px 10px #b5b5b5;
+          box-shadow: 0px 0px 10px #b5b5b5;
 }
 /*# sourceMappingURL=group.css.map */

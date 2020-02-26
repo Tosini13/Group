@@ -24,17 +24,62 @@ ul {
   margin: 0px;
   padding: 0px;
 }
+input:focus {
+  outline: none;
+}
 
 #dashboardGroups {
   //display: none;
   /* temp */
   height: 100vh;
-  & > ul {
-    display: flex;
-    flex-direction: row;
-    text-transform: uppercase;
-    justify-content: space-between;
-    /* temp */
-    border: white solid 1px;
+  .group {
+    text-align: center;
+    & > select {
+      text-align: center;
+      width: 100%;
+    }
+    & > ul {
+      display: flex;
+      flex-direction: row;
+      text-transform: uppercase;
+      justify-content: space-between;
+      /* temp */
+      border: white solid 1px;
+    }
+    .table {
+      table {
+        border-collapse: collapse;
+        max-width: 100%;
+        width: 100%;
+        table-layout: fixed;
+        // border: white solid 1px;
+        td,
+        th {
+          overflow: hidden;
+          width: 60px;
+          padding: 5px;
+        }
+        td:first-child,
+        th:first-child {
+          width: auto;
+        }
+        td {
+          border-top: white solid 1px;
+        }
+      }
+    }
+    .team {
+      background-color: transparent;
+      border: $color solid 1px;
+      color: $color;
+      border-radius: 4px;
+      padding: 5px;
+      text-align: center;
+    }
+    .teams {
+      .team:focus {
+        box-shadow: 0px 0px 10px $color;
+      }
+    }
   }
 }
