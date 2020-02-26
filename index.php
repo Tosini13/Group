@@ -9,19 +9,20 @@
 </head>
 
 <body>
-    <section class='formCreation'>
-        <h6>Nazwa turnieju</h6>
+    <section id='formCreation'>
+        <label for='name'>Nazwa turnieju</label>
         <input class="text" type="text" name="name" placeholder="nazwa turnieju">
-        <h2>FAZA GRUPOWA</h2>
-        <h6>Liczba drużyn</h6>
-        <select class="number" name="no_teams">
+        <h2 class='mobileWholeWidth'>FAZA GRUPOWA</h2>
+        <label for='no_teams'>Liczba drużyn</label>
+        <!-- <select class="number" name="no_teams">
             <?php
             for ($i = 2; $i < 97; $i++) {
                 echo "<option value='" . $i . "'>" . $i . "</option>";
             }
             ?>
-        </select>
-        <h6>Ilość grup</h6>
+        </select> -->
+        <input class="number" type="number" name="no_teams" min='2' max='99' value="2">
+        <label for='no_groups'>Ilość grup</label>
         <select class="number" name="no_groups">
             <option value="1">1</option>
             <?php
@@ -30,24 +31,23 @@
             }
             ?>
         </select>
-        <h6>Rewanże</h6>
+        <label for='revange_group'>Rewanże</label>
         <input type="checkbox" name="revange_group">
-        <h6>Punkty za wygraną</h6>
-        <input class="number" type="text" name="win_points" value="3">
-        <h6>Punkty za remis</h6>
-        <input class="number" type="text" name="draw_points" value="1">
+        <label for='win_points'>Punkty za wygraną</label>
+        <input class="number" type="number" name="win_points" min='1' max='100' value="3">
+        <label for='draw_points'>Punkty za remis</label>
+        <input class="number" type="text" name="draw_points" min='1' max='100' value="1">
 
-        <h2>FAZA PUCHAROWA*</h2>
-        <h6>*(tymczasowe - tylko ilość meczów w pierwszej rundzie do awansów z grupy)</h6>
-        <h6>Tryb fazy pucharowej</h6>
-        <select name='play_offs'>
+        <h2 class='mobileWholeWidth'>FAZA PUCHAROWA*<br><span style='font-size: 10px'>*(tymczasowe - tylko ilość meczów w pierwszej rundzie do awansów z grupy)</span></h2>
+        <label class='mobileWholeWidth' for='play_offs'>Tryb fazy pucharowej</label>
+        <select class='mobileWholeWidth' name='play_offs'>
             <option value="1">Finał</option>
             <option value="2">Finał, Półfinały</option>
             <option value="4">Finał, Półfinały, Ćwierćfinały</option>
             <option value="8">Finał, Półfinały, Ćwierćfinały, 1/16</option>
             <option value="16">Finał, Półfinały, Ćwierćfinały, 1/16, 1/32</option>
         </select>
-        <a class="button" href='#' onclick="createGroup()">Dalej</a>
+        <a class="button mobileWholeWidth" href='#' onclick="createGroup()">Dalej</a>
     </section>
 
     <section id='dashboardGroups'>
@@ -57,6 +57,11 @@
 
     <script src="js/structure.js" type='text/javascript'></script>
     <script src="js/group.js" type='text/javascript'></script>
+    <script>
+        $(document).ready(function() {
+            changeIcon();
+        });
+    </script>
     <!-- JavaScript -->
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->

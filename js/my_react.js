@@ -71,19 +71,20 @@ class MatchShow extends React.Component {
     }
 
     startMatch() {
+        let match = this.state.match;
         if (this.state.match.mode == 2) {
-            //alert('ten mecz już się zakończył!');
+            this.state.match.mode = 1;
             console.log('ten mecz już się zakończył! Ale wznawiam');
-            this.state.match.mode = 1;
         } else if (this.state.match.mode == 1) {
+            match.mode = 2;
             console.log('ten mecz jest już rozpoczęty');
-        } else {
-            this.state.match.mode = 1;
-            this.state.match.result.home = 0;
-            this.state.match.result.away = 0;
-            console.log('mecz się rozpoczął');
+        } else if (this.state.match.mode == 0) {
+            match.mode = 1;
+            match.result.home = 0;
+            match.result.away = 0;
+            console.log('Rozpoczynam mecz');
         }
-        console.log('match mode: ' + this.state.match.mode);
+        this.setState({ match: match });
     }
 
     addHomeGoal() {
@@ -131,6 +132,14 @@ class MatchShow extends React.Component {
     }
 
     render() {
+        console.log('match mode in render: ' + this.state.match.mode);
+        let modeClass = '';
+        if (this.state.match.mode == 1) {
+            this.modeButton = <a onClick={this.startMatch}><i className='icon-record'></i></a>
+            modeClass += 'matchLive';
+        } else {
+            this.modeButton = <a onClick={this.startMatch}><i className='icon-play'></i></a>
+        }
         //MATCHES WITH UPDATING SCORE
         switch (this.rights) {
             case 'EDIT':
@@ -138,7 +147,7 @@ class MatchShow extends React.Component {
                     <div className='matchDashboard'>
                         <a onClick={this.lessHomeGoal}><i className='icon-minus-circled'></i></a>
                         <a onClick={this.addHomeGoal}><i className='icon-plus-circled'></i></a>
-                        <a onClick={this.startMatch}><i className='icon-play'></i></a>
+                        {this.modeButton}
                         <a onClick={this.lessAwayGoal}><i className='icon-minus-circled'></i></a>
                         <a onClick={this.addAwayGoal}><i className='icon-plus-circled'></i></a>
                     </div>
@@ -147,7 +156,7 @@ class MatchShow extends React.Component {
                 this.piece = '';
         }
         return (
-            <div>
+            <div className={modeClass}>
                 {this.piece}
                 <div className='matchDatas'>
                     <TeamShow team={this.state.match.home} rights={false} />
@@ -342,7 +351,7 @@ class ManagerShow extends React.Component {
 // ========================================
 
 function createGroup(rights) {
-    document.querySelector('.formCreation').style.display = 'none';
+    document.querySelector('#formCreation').style.display = 'none';
     document.querySelector('#dashboardGroups').style.display = 'block';
 
     ReactDOM.render(

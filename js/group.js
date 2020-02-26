@@ -15,13 +15,16 @@ function changeClass() {
 }
 
 function changeIcon() {
+    console.log('ChangeIcon');
     // icon-play
     var b = false;
     var arr = document.getElementsByClassName('icon-play');
+    console.log('arr: ' + arr);
     for (var i = 0; i < arr.length; i++) {
         arr[i].onclick = () => {
-            arr[i].classList.add('icon-record');
-            arr[i].classList.remove('icon-play');
+            // arr[i].classList.add('icon-record');
+            // arr[i].classList.remove('icon-play');
+            console.log('clicked');
         };
     }
 }
