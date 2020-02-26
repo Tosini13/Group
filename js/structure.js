@@ -1,35 +1,103 @@
-function groupInit() {
-    var no_teams = document.getElementsByName('no_teams')[0].value;
-    var no_groups = document.getElementsByName('no_groups')[0].value;
-    tournament = new Tournament();
-    for (let i = 0; i < no_groups; i++) {
-        //numbers validation! how many teams can I have in groups and so on...
-        //teams divide by groups!
-        tournament.groups[0] = new Group(String.fromCharCode(65 + i), no_teams, 1);
-        //temp:
-        tournament.groups[0].tempStartEnd();
-        tournament.groups[0].showTable();
-        tournament.groups[0].showMatches();
-    }
-}
+// class Manager {
+//     Tournament = null;
+
+//     groupInit() {
+//         var no_teams = document.getElementsByName('no_teams')[0].value;
+//         var no_groups = document.getElementsByName('no_groups')[0].value;
+//         var bracketNo = document.getElementsByName('play_offs')[0].value;
+//         this.tournament = new Tournament(no_teams, no_groups, bracketNo);
+//         this.tournament.name = document.getElementsByName('name')[0].value;
+
+//         document.querySelector('.formCreation').style.display = 'none';
+//         document.querySelector('.dashboardGroup').style.display = 'block';
+//     }
+// }
+
 
 class Tournament {
-    groups = []; //important keys of array - to identify group!
-    teams = []; //can't be two teams with the same name!!!
+    name = null;
+    teamsQtt = null;
+    groupsQtt = null;
+    teams = [];         //can't be two teams with the same name!!!
+    groups = [];        //important keys of array - to identify group!
+    firstRound = null;  //1-final;2-semi;4-quater;8-1/16;16-1/32
+
+    //SET
+    setGroupQtt(arg) {
+        if (arg > this.teamsQtt) {
+            this.groupsQtt = parseInt(this.teamsQtt);
+        } else {
+            this.groupsQtt = parseInt(arg);
+        }
+    };
+
+    setFirstRound(arg) {
+        //FOR HYBRID - GROUP & BRACKET
+        if (arg % 4 == 0 || arg == 1 || arg == 2) {
+            //if arg is in required number structure, but still not good root modulo
+            while (arg * 2 > this.teamsQtt) {
+                //when there's more play offs than participants
+                arg /= 2;
+            }
+            if (arg * 2 < this.groupsQtt) {
+                arg = this.groupsQtt / 2;
+            }
+            //$this->play_offs_qtt = $arg / 2;
+            this.firstRound = arg;
+        } else {
+            return false;
+        }
+    }
+
+    //FUNCTIONS
+
+
+    createGroups() {
+        let restTeams = 0;
+        let add = 0;
+        if (this.groupsQtt != 1) {
+            restTeams = this.teamsQtt % this.groupsQtt;
+        }
+        for (let i = 0; i < this.groupsQtt; i++) {
+            //check if it will be the same amount of teams or not
+            if (restTeams != 0) {
+                add = 1;
+                restTeams--;
+            } else {
+                add = 0;
+            }
+            //how many teams should to be in particular group
+            let group = new Group(String.fromCharCode(65 + i), Math.floor(this.teamsQtt / this.groupsQtt) + add, this.firstRound);
+            this.groups.push(group);
+
+            //temp:
+            group.showTable();
+            group.showMatches();
+        }
+    }
+
+    constructor(teamsQtt, groupsQtt, firstRound) {
+        this.teamsQtt = parseInt(teamsQtt);
+        this.setGroupQtt(groupsQtt);
+        this.setFirstRound(firstRound);
+        this.createGroups();
+    }
 }
 
 class Group {
     name = null;
     teamsQtt = null;
     promotedQtt = null; //color table rows?!
-    matches = [];       //important keys of array - to identify match!
-    table = [];
+    matches = [];       //important keys of array - to identify match!?
+    table = [];         //array that contains teams, points, goals
 
+
+    //FUNCTIONS
 
     tableInit = function () {
         for (let i = 0; i < this.teamsQtt; i++) {
             var row = {
-                team: new Team('Zespół nr ' + (i + 1)),
+                team: new Team('Zespół nr ' + (i + 1) + " z " + this.name),
                 points: null,
                 goalsScored: null,
                 goalsLost: null
@@ -98,40 +166,46 @@ class Group {
 
     countTable() {
         this.clearTable();
+        let begunGroup = false; //check if group has begun
         for (let match of this.matches) {
-            //if (match.status == 2) {
-            for (let row of this.table) {
-                if (row.points == null) {
-                    console.log("Matches didn't start!!");
-                }
-                //team is host
-                if (match.home == row.team) {
-                    //add points
-                    if (match.result.home > match.result.away) {
-                        row.points += parseInt(3);
-                    } else if (match.result.home == match.result.away) {
-                        row.points += parseInt(1);
+            if (match.status == 2) {
+                begunGroup = true;
+                for (let row of this.table) {
+                    if (row.points == null) {
+                        console.log("Matches didn't start!!");
                     }
-                    //goal balance
-                    row.goalsScored += parseInt(match.result.home);
-                    row.goalsLost += parseInt(match.result.away);
-                }
-                //team is host
-                if (match.away == row.team) {
-                    //add points
-                    if (match.result.home < match.result.away) {
-                        row.points += parseInt(3);
-                    } else if (match.result.home == match.result.away) {
-                        row.points += parseInt(1);
+                    //team is host
+                    if (match.home == row.team) {
+                        //add points
+                        if (match.result.home > match.result.away) {
+                            row.points += parseInt(3);
+                        } else if (match.result.home == match.result.away) {
+                            row.points += parseInt(1);
+                        }
+                        //goal balance
+                        row.goalsScored += parseInt(match.result.home);
+                        row.goalsLost += parseInt(match.result.away);
                     }
-                    //goal balance
-                    row.goalsScored += parseInt(match.result.away);
-                    row.goalsLost += parseInt(match.result.home);
+                    //team is host
+                    if (match.away == row.team) {
+                        //add points
+                        if (match.result.home < match.result.away) {
+                            row.points += parseInt(3);
+                        } else if (match.result.home == match.result.away) {
+                            row.points += parseInt(1);
+                        }
+                        //goal balance
+                        row.goalsScored += parseInt(match.result.away);
+                        row.goalsLost += parseInt(match.result.home);
+                    }
                 }
             }
-            //}else{return(0);}
         }
-        this.table.sort(this.sortTable);
+        if (begunGroup) {
+            this.table.sort(this.sortTable);
+        } else {
+            this.clearTable();
+        }
     }
 
     promoteTeams() {

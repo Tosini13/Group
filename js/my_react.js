@@ -155,17 +155,29 @@ class MatchShow extends React.Component {
 class GroupShow extends React.Component {
     constructor(props) {
         super(props);
-        this.group = new Group(props.name, 5, 1);
+        console.log('in group group: ' + this.props.group.name);
+        this.group = this.props.group
+        this.state = {
+            group: this.props.group,
+        }
+        //this.group = props.group;
         this.group.tempStartEnd();
         this.rights = props.rights;
     }
 
+    setGroup() {
+        this.group = this.props.group
+    }
+
     render() {
+        this.setGroup();
         //prerequisites
         //this.group.tempStartEnd();
         this.group.countTable();
         //this.group.showTable();
-
+        //console.log('in group group: ' + this.props.group);
+        console.log('in group group: ' + this.props.group.name);
+        console.log('in group: ' + this.state.group.name);
         switch (this.props.mode) {
             case 'table':
                 //TABLE
@@ -235,11 +247,68 @@ class GroupShow extends React.Component {
 }
 
 class TournamentShow extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            groupMode: 'matches',
+            groupCurrent: this.props.tournament.groups[0], //current group to display - default first
+            rights: this.props.rights,
+        }
+        this.changeGroup = this.changeGroup.bind(this);
+    }
+
+    changeGroup(event) {
+        this.setState({ groupCurrent: this.props.tournament.groups[event.target.value] });
+    }
+
     render() {
+        //MATCH LIST
+        this.groups = this.props.tournament.groups.map((item, key) =>
+            <option value={key}>{item.name}</option>
+        );
+        console.log(this.state.groupCurrent.name);
         return (
             <div className="group">
-                {this.props.mode}
-                <GroupShow name={String.fromCharCode(65)} mode={this.props.mode} rights={this.props.rights} />
+                {this.props.tournament.name}
+                {this.state.groupCurrent.name}
+                <select onChange={this.changeGroup}>
+                    {this.groups}
+                </select>
+                <ul>
+                    <li><a onClick={() => this.setState({ groupMode: 'teams' })}>Edytuj?s drużyny</a></li>
+                    <li><a onClick={() => this.setState({ groupMode: 'table' })}>Tabela</a></li>
+                    <li><a onClick={() => this.setState({ groupMode: 'matches' })}>Mecze</a></li>
+                    <li><a onClick={() => this.setState({ groupMode: 'promote' })}>Awans</a></li>
+                </ul>
+                <GroupShow group={this.state.groupCurrent} mode={this.state.groupMode} rights={this.state.rights} />
+            </div>
+        );
+    }
+}
+
+class ManagerShow extends React.Component {
+    tournament = null;
+    rights = 'EDIT';
+
+    groupInit() {
+        var no_teams = document.getElementsByName('no_teams')[0].value;
+        var no_groups = document.getElementsByName('no_groups')[0].value;
+        var bracketNo = document.getElementsByName('play_offs')[0].value;
+        this.tournament = new Tournament(no_teams, no_groups, bracketNo);
+        this.tournament.name = document.getElementsByName('name')[0].value;
+
+        // document.querySelector('.formCreation').style.display = 'none';
+        // document.querySelector('#dashboardGroup').style.display = 'block';
+    }
+
+
+    render() {
+        this.groupInit();
+
+        return (
+            <div className='dashboardGroup'>
+                <TournamentShow tournament={this.tournament} rights={this.rights} />
             </div>
         );
     }
@@ -247,10 +316,19 @@ class TournamentShow extends React.Component {
 
 // ========================================
 
-function groupMode(mode, rights) {
+function createGroup(rights) {
+    document.querySelector('.formCreation').style.display = 'none';
+    document.querySelector('#dashboardGroups').style.display = 'block';
+
     ReactDOM.render(
-        <TournamentShow mode={mode} rights={rights} />,
-        document.getElementById('my_react')
+        <ManagerShow rights={rights} />,
+        document.getElementById('dashboardGroups')
     );
 }
 
+// groupMode(mode, rights) {
+//     ReactDOM.render(
+//         <TournamentShow tournament={tournament} mode={mode} rights={rights} />,
+//         document.getElementById('my_react')
+//     );
+// }

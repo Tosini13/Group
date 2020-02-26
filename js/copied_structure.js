@@ -85,6 +85,7 @@ var Tournament = (function () {
             this.teams[i].set_name("Zespół nr " + i + 1);
         }
     };
+    
     Tournament.prototype.declare_groups = function (group_qtt, play_offs_qtt) {
         var team_qtt;
         team_qtt = 0;
@@ -98,7 +99,6 @@ var Tournament = (function () {
             rest_teams = 0;
         }
         var i;
-        __loop1:
         for (i = 0; i < this.get_group_qtt(); i++) {
             //check if in group shouldn't be the same amount of teams
             if (rest_teams != 0) {
@@ -113,14 +113,13 @@ var Tournament = (function () {
             this.groups[i].promoted_teams_qtt(this.group_qtt, this.get_play_offs_qtt());
             //create teams in group
             var j;
-            __loop2:
             for (j = 0; j < this.groups[i].teams_qtt; j++) {
                 this.groups[i].teams[j] = this.teams[team_qtt++];
-                //$this->groups[$i]->teams[$j]->set_name('Zespół nr ' . ($j + 1) . ' G: ' . $this->groups[$i]->name);
             }
             this.groups[i].create_matches();
         }
     };
+
     Tournament.prototype.promoted_all_teams = function () {
         var promoted_all_teams;
         promoted_all_teams = {};

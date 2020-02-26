@@ -23,12 +23,12 @@ ul {
   padding: 0px;
 }
 
-.dashboardGroup {
+#dashboardGroups {
   /* temp */
   height: 100vh;
 }
 
-.dashboardGroup > ul {
+#dashboardGroups > ul {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
