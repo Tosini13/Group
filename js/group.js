@@ -8,3 +8,20 @@
 //     document.querySelector('.formCreation').style.display = 'none';
 //     document.querySelector('.dashboardGroup').style.display = 'block';
 // }
+
+function changeClass() {
+    this.classList.add('icon-record');
+    obj.classList.remove('icon-play');
+}
+
+function changeIcon() {
+    // icon-play
+    var b = false;
+    var arr = document.getElementsByClassName('icon-play');
+    for (var i = 0; i < arr.length; i++) {
+        arr[i].onclick = () => {
+            arr[i].classList.add('icon-record');
+            arr[i].classList.remove('icon-play');
+        };
+    }
+}

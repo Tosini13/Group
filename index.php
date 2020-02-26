@@ -47,7 +47,7 @@
             <option value="8">Finał, Półfinały, Ćwierćfinały, 1/16</option>
             <option value="16">Finał, Półfinały, Ćwierćfinały, 1/16, 1/32</option>
         </select>
-        <a href='#' onclick="createGroup()">Dalej</a>
+        <a class="button" href='#' onclick="createGroup()">Dalej</a>
     </section>
 
     <section id='dashboardGroups'>

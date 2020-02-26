@@ -60,8 +60,6 @@ class MatchShow extends React.Component {
             match: props.match,
         }
 
-
-
         //REFERENCES
         this.goalHome = React.createRef();
         this.addHomeGoal = this.addHomeGoal.bind(this);
@@ -69,33 +67,66 @@ class MatchShow extends React.Component {
         this.goalAway = React.createRef();
         this.addAwayGoal = this.addAwayGoal.bind(this);
         this.lessAwayGoal = this.lessAwayGoal.bind(this);
+        this.startMatch = this.startMatch.bind(this);
+    }
+
+    startMatch() {
+        if (this.state.match.mode == 2) {
+            //alert('ten mecz już się zakończył!');
+            console.log('ten mecz już się zakończył! Ale wznawiam');
+            this.state.match.mode = 1;
+        } else if (this.state.match.mode == 1) {
+            console.log('ten mecz jest już rozpoczęty');
+        } else {
+            this.state.match.mode = 1;
+            this.state.match.result.home = 0;
+            this.state.match.result.away = 0;
+            console.log('mecz się rozpoczął');
+        }
+        console.log('match mode: ' + this.state.match.mode);
     }
 
     addHomeGoal() {
-        if (this.goalHome.current.value < 1000) {
-            this.goalHome.current.value++;
-            this.state.match.result.home = this.goalHome.current.value;
+        if (this.state.match.mode == 1) {
+            if (this.goalHome.current.value < 1000) {
+                this.goalHome.current.value++;
+                this.state.match.result.home = this.goalHome.current.value;
+            }
+        } else {
+            console.log('Najpierw rozpocznij mecz');
         }
     }
 
     lessHomeGoal() {
-        if (this.goalHome.current.value > 0) {
-            this.goalHome.current.value--;
-            this.state.match.result.home = this.goalHome.current.value;
+        if (this.state.match.mode == 1) {
+            if (this.goalHome.current.value > 0) {
+                this.goalHome.current.value--;
+                this.state.match.result.home = this.goalHome.current.value;
+            }
+        } else {
+            console.log('Start match');
         }
     }
 
     addAwayGoal() {
-        if (this.goalAway.current.value < 1000) {
-            this.goalAway.current.value++;
-            this.state.match.result.away = this.goalAway.current.value;
+        if (this.state.match.mode == 1) {
+            if (this.goalAway.current.value < 1000) {
+                this.goalAway.current.value++;
+                this.state.match.result.away = this.goalAway.current.value;
+            }
+        } else {
+            console.log('Start match');
         }
     }
 
     lessAwayGoal() {
-        if (this.goalAway.current.value > 0) {
-            this.goalAway.current.value--;
-            this.state.match.result.away = this.goalAway.current.value;
+        if (this.state.match.mode == 1) {
+            if (this.goalAway.current.value > 0) {
+                this.goalAway.current.value--;
+                this.state.match.result.away = this.goalAway.current.value;
+            }
+        } else {
+            console.log('Start match');
         }
     }
 
@@ -107,7 +138,7 @@ class MatchShow extends React.Component {
                     <div className='matchDashboard'>
                         <a onClick={this.lessHomeGoal}><i className='icon-minus-circled'></i></a>
                         <a onClick={this.addHomeGoal}><i className='icon-plus-circled'></i></a>
-                        <i>PLAY</i>
+                        <a onClick={this.startMatch}><i className='icon-play'></i></a>
                         <a onClick={this.lessAwayGoal}><i className='icon-minus-circled'></i></a>
                         <a onClick={this.addAwayGoal}><i className='icon-plus-circled'></i></a>
                     </div>
@@ -120,9 +151,9 @@ class MatchShow extends React.Component {
                 {this.piece}
                 <div className='matchDatas'>
                     <TeamShow team={this.state.match.home} rights={false} />
-                    <input className='goalHome' type='text' value={this.state.match.result.home} ref={this.goalHome} readOnly />
-                    vs
-                    <input className='goalAway' type='text' value={this.state.match.result.away} ref={this.goalAway} readOnly />
+                    <input className='goalHome goal' type='text' value={this.state.match.result.home} ref={this.goalHome} readOnly />
+                    <i className='versus'>vs</i>
+                    <input className='goalAway goal' type='text' value={this.state.match.result.away} ref={this.goalAway} readOnly />
                     <TeamShow team={this.state.match.away} rights={false} />
                 </div>
             </div>
@@ -160,7 +191,7 @@ class GroupShow extends React.Component {
             mode: this.props.mode,
         }
         this.rights = props.rights;
-        this.state.group.tempStartEnd();
+        //this.state.group.tempStartEnd();
     }
 
     setGroup() {
@@ -176,7 +207,7 @@ class GroupShow extends React.Component {
     render() {
         //prerequisites
         this.setGroup();
-        this.state.group.tempStartEnd();
+        //this.state.group.tempStartEnd();
         this.state.group.countTable();
         switch (this.state.mode) {
             case 'table':
@@ -270,7 +301,6 @@ class TournamentShow extends React.Component {
         return (
             <div className="group">
                 <h2>{this.props.tournament.name}</h2>
-                <h3>{this.state.groupCurrent.name}</h3>
                 <select onChange={this.changeGroup}>
                     {this.groups}
                 </select>

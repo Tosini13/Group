@@ -1,19 +1,3 @@
-// class Manager {
-//     Tournament = null;
-
-//     groupInit() {
-//         var no_teams = document.getElementsByName('no_teams')[0].value;
-//         var no_groups = document.getElementsByName('no_groups')[0].value;
-//         var bracketNo = document.getElementsByName('play_offs')[0].value;
-//         this.tournament = new Tournament(no_teams, no_groups, bracketNo);
-//         this.tournament.name = document.getElementsByName('name')[0].value;
-
-//         document.querySelector('.formCreation').style.display = 'none';
-//         document.querySelector('.dashboardGroup').style.display = 'block';
-//     }
-// }
-
-
 class Tournament {
     name = null;
     teamsQtt = null;
@@ -25,11 +9,10 @@ class Tournament {
 
     //SET
     setGroupQtt(arg) {
-        if (arg > this.teamsQtt) {
-            this.groupsQtt = parseInt(this.teamsQtt);
-        } else {
-            this.groupsQtt = parseInt(arg);
+        while (arg > this.teamsQtt) {
+            arg /= 2;
         }
+        this.groupsQtt = parseInt(arg);
     };
 
     setFirstRound(arg) {
@@ -72,8 +55,8 @@ class Tournament {
             this.groups.push(group);
 
             //temp:
-            group.showTable();
-            group.showMatches();
+            //group.showTable();
+            //group.showMatches();
         }
     }
 
@@ -181,7 +164,7 @@ class Group {
         this.clearTable();
         let begunGroup = false; //check if group has begun
         for (let match of this.matches) {
-            if (match.status == 2) {
+            if (match.mode != 0) {
                 begunGroup = true;
                 for (let row of this.table) {
                     if (row.points == null) {
@@ -268,23 +251,18 @@ class Group {
 class Match {
     home = null;
     away = null;
+    mode = null; //0-not_tarted;1-started;2-finished
     result = {
         home: null,
         away: null,
     }; //[0]-home;[1]-away
-    status = 0; //0-not_tarted;1-started;2-finished
-
-    constructor(home, away) {
-        this.home = home;
-        this.away = away;
-    }
 
     startMatch() {
-        if (this.status == 2) {
+        if (this.mode == 2) {
             //alert('ten mecz już się zakończył!');
             console.log('ten mecz już się zakończył!');
         } else {
-            this.status = 1;
+            this.mode = 1;
             this.result.home = 0;
             this.result.away = 0;
         }
@@ -292,39 +270,62 @@ class Match {
     }
 
     endMatch() {
-        if (this.status == 0) {
+        if (this.mode == 0) {
             alert('ten mecz jeszcze się nie rozpoczął!');
         } else {
-            this.status = 2;
+            this.mode = 2;
         }
         return false;
     }
 
-    goalValidity() {
-        if (this.status == 1) {
-            return true;
-        } else if (this.status == 0) {
-            alert('Mecz się nie rozpoczął');
-        } else if (this.status == 2) {
-            alert('Mecz się już zaokńczył');
-        }
-        return false;
-    }
+    // goalValidity() {
+    //     if (this.mode == 1) {
+    //         return true;
+    //     } else if (this.mode == 0) {
+    //         console.log('Mecz się nie rozpoczął');
+    //     } else if (this.mode == 2) {
+    //         console.log('Mecz się już zaokńczył');
+    //     }
+    //     return false;
+    // }
 
-    goalHome() {
-        if (this.goalValidity) {
-            this.result.home++;
-        } else {
-            return false;
-        }
-    }
+    // goalHome() {
+    //     if (this.goalValidity) {
+    //         this.result.home++;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
-    goalAway() {
-        if (this.goalValidity) {
-            this.result.away++;
-        } else {
-            return false;
-        }
+    // goalAway() {
+    //     if (this.goalValidity) {
+    //         this.result.away++;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    // lessHome() {
+    //     if (this.goalValidity) {
+    //         this.result.home--;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+    // lessAway() {
+    //     if (this.goalValidity) {
+    //         this.result.away--;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+
+    constructor(home, away) {
+        this.home = home;
+        this.away = away;
+        this.mode = 0;
     }
 }
 

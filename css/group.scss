@@ -7,16 +7,12 @@ body {
 
 a {
   cursor: pointer;
+  text-decoration: none;
 
   -webkit-transition-property: color;
   -webkit-transition-duration: 0.3s;
   transition-property: color;
   transition-duration: 0.3s;
-}
-@media only screen and (min-width: 980px) {
-  a:hover {
-    color: white;
-  }
 }
 
 ul {
@@ -24,6 +20,40 @@ ul {
   margin: 0px;
   padding: 0px;
 }
+
+.button {
+  background-color: transparent;
+  border: black solid 1px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
+  color: $color;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}
+
+select,
+input {
+  background-color: transparent;
+  border: black solid 1px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.7);
+  color: $color;
+  border-radius: 4px;
+  padding: 5px;
+  text-align: center;
+}
+select {
+  margin: 10px 0px;
+  font-size: 16px;
+  & > option {
+    background-color: $backgroundColor;
+    text-align: center;
+  }
+  & > option:checked {
+    background-color: $color;
+    color: $backgroundColor;
+  }
+}
+select:focus,
 input:focus {
   outline: none;
 }
@@ -35,7 +65,6 @@ input:focus {
   .group {
     text-align: center;
     & > select {
-      text-align: center;
       width: 100%;
     }
     & > ul {
@@ -43,6 +72,7 @@ input:focus {
       flex-direction: row;
       text-transform: uppercase;
       justify-content: space-between;
+      margin: 10px 0px;
       /* temp */
       border: white solid 1px;
     }
@@ -68,18 +98,67 @@ input:focus {
         }
       }
     }
-    .team {
-      background-color: transparent;
-      border: $color solid 1px;
-      color: $color;
-      border-radius: 4px;
-      padding: 5px;
-      text-align: center;
-    }
     .teams {
+      & > ul {
+        & > li {
+          margin: 5px 0px;
+        }
+      }
       .team:focus {
         box-shadow: 0px 0px 10px $color;
       }
     }
+    .matches {
+      & > ul {
+        & > li {
+          margin-top: 10px;
+        }
+      }
+      .matchDashboard {
+        margin-top: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 35px;
+        width: 300px;
+        margin: 0px auto;
+      }
+      .matchDatas {
+        margin-top: 5px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        .team {
+          width: 80%;
+        }
+        .goal {
+          margin: 0px 2%;
+          padding: 3px;
+          width: 20px;
+          height: 20px;
+          text-align: center;
+          border-radius: 50%;
+        }
+        .versus {
+          margin: 0px 2%;
+          font-size: 20px;
+        }
+      }
+    }
+    .promoted {
+      & > ul {
+        & > li {
+          margin: 5px 0px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 980px) {
+  a:hover {
+    color: white;
   }
 }
