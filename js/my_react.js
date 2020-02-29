@@ -4,9 +4,8 @@ class TeamShow extends React.Component {
     constructor(props) {
         super(props);
         this.team = props.team;
-        this.rights = props.rights;
         this.state = {
-            value: this.team.name,
+            name: this.team.name,
         }
         this.inputChange = this.inputChange.bind(this);
         this.teamName = React.createRef();
@@ -17,8 +16,8 @@ class TeamShow extends React.Component {
     }
 
     inputChange(event) {
-        if (this.rights === 'EDIT') {
-            this.setState({ value: event.target.value });
+        if (this.props.rights === 'EDIT') {
+            this.setState({ name: event.target.value });
         }
 
         //NOT NECESSARY
@@ -32,8 +31,15 @@ class TeamShow extends React.Component {
         this.icon = 'icon-pencil';
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.team !== prevProps.team) {
+            this.team = this.props.team;
+            this.setState({ name: this.props.team.name })
+        }
+    }
+
     render() {
-        switch (this.rights) {
+        switch (this.props.rights) {
             case 'EDIT':
                 this.piece = <a onClick={this.saveChanges}><i className={this.icon}></i></a>
                 this.inputMode = ''
@@ -44,18 +50,16 @@ class TeamShow extends React.Component {
         }
         return (
             <div>
-                <input className="team" type='text' value={this.state.value} onChange={this.inputChange} ref={this.teamName} />
+                <input className="team" type='text' value={this.state.name} onChange={this.inputChange} ref={this.teamName} />
                 {this.piece}
             </div>
         );
     }
 }
 
-
 class MatchShow extends React.Component {
     constructor(props) {
         super(props);
-        this.rights = props.rights;
         this.state = {
             match: props.match,
         }
@@ -70,6 +74,13 @@ class MatchShow extends React.Component {
         this.startMatch = this.startMatch.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.match !== prevProps.match) {
+            this.setState({ match: this.props.match });
+        }
+    }
+
+
     startMatch() {
         let match = this.state.match;
         if (this.state.match.mode == 2) {
@@ -82,6 +93,8 @@ class MatchShow extends React.Component {
             match.mode = 1;
             match.result.home = 0;
             match.result.away = 0;
+            //this.setState({ goalHome: 0 });
+            //this.setState({ goalAway: 0 });
             console.log('Rozpoczynam mecz');
         }
         this.setState({ match: match });
@@ -92,6 +105,7 @@ class MatchShow extends React.Component {
             if (this.goalHome.current.value < 1000) {
                 this.goalHome.current.value++;
                 this.state.match.result.home = this.goalHome.current.value;
+                //this.setState({ goalHome: this.goalHome.current.value });
             }
         } else {
             console.log('Najpierw rozpocznij mecz');
@@ -103,9 +117,10 @@ class MatchShow extends React.Component {
             if (this.goalHome.current.value > 0) {
                 this.goalHome.current.value--;
                 this.state.match.result.home = this.goalHome.current.value;
+                //this.setState({ goalHome: this.goalHome.current.value });
             }
         } else {
-            console.log('Start match');
+            console.log('Najpierw rozpocznij mecz');
         }
     }
 
@@ -114,9 +129,10 @@ class MatchShow extends React.Component {
             if (this.goalAway.current.value < 1000) {
                 this.goalAway.current.value++;
                 this.state.match.result.away = this.goalAway.current.value;
+                //this.setState({ goalAway: this.goalAway.current.value });
             }
         } else {
-            console.log('Start match');
+            console.log('Najpierw rozpocznij mecz');
         }
     }
 
@@ -125,14 +141,14 @@ class MatchShow extends React.Component {
             if (this.goalAway.current.value > 0) {
                 this.goalAway.current.value--;
                 this.state.match.result.away = this.goalAway.current.value;
+                //this.setState({ goalAway: this.goalAway.current.value });
             }
         } else {
-            console.log('Start match');
+            console.log('Najpierw rozpocznij mecz');
         }
     }
 
     render() {
-        console.log('match mode in render: ' + this.state.match.mode);
         let modeClass = '';
         if (this.state.match.mode == 1) {
             this.modeButton = <a onClick={this.startMatch}><i className='icon-record'></i></a>
@@ -141,7 +157,7 @@ class MatchShow extends React.Component {
             this.modeButton = <a onClick={this.startMatch}><i className='icon-play'></i></a>
         }
         //MATCHES WITH UPDATING SCORE
-        switch (this.rights) {
+        switch (this.props.rights) {
             case 'EDIT':
                 this.piece =
                     <div className='matchDashboard'>
@@ -191,37 +207,18 @@ class MatchShow extends React.Component {
     }
 }
 
-
 class GroupShow extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            group: this.props.group,
-            mode: this.props.mode,
-        }
         this.rights = props.rights;
-        //this.state.group.tempStartEnd();
-    }
-
-    setGroup() {
-        if (this.state.group != this.props.group) {
-            this.setState({ group: this.props.group });
-        }
-
-        if (this.state.mode != this.props.mode) {
-            this.setState({ mode: this.props.mode });
-        }
     }
 
     render() {
-        //prerequisites
-        this.setGroup();
-        //this.state.group.tempStartEnd();
-        this.state.group.countTable();
-        switch (this.state.mode) {
+        this.props.group.countTable();
+        switch (this.props.mode) {
             case 'table':
                 //TABLE
-                this.table = this.state.group.table.map((item, key) =>
+                this.table = this.props.group.table.map((item, key) =>
                     <tr><td>{item.team.name}</td><td>{item.points}</td><td>{item.goalsScored}</td><td>{item.goalsLost}</td></tr>
                 );
                 return (
@@ -237,7 +234,7 @@ class GroupShow extends React.Component {
                 break;
             case 'matches':
                 //MATCH LIST
-                this.matches = this.state.group.matches.map((item, key) =>
+                this.matches = this.props.group.matches.map((item, key) =>
                     <li>
                         <MatchShow match={item} rights={this.rights} />
                     </li>
@@ -252,9 +249,8 @@ class GroupShow extends React.Component {
                 break;
             case 'teams':
                 //TEAMS LIST
-                this.teams = this.state.group.table.map((item, key) =>
+                this.teams = this.props.group.table.map((item, key) =>
                     <li><TeamShow team={item.team} rights={this.rights} /></li>
-                    // <input type='text' value={item.name} readOnly />
                 );
                 return (
                     <div className='teams'>
@@ -266,7 +262,7 @@ class GroupShow extends React.Component {
                 break;
             case 'promote':
                 //PROMOTED TEAMS
-                let arr = this.state.group.promoteTeams();
+                let arr = this.props.group.promoteTeams();
                 this.teams = arr.map((item, key) =>
                     <li><TeamShow team={item} rights={false} /></li>
                 );

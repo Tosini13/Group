@@ -32,7 +32,7 @@
             ?>
         </select>
         <label for='revange_group'>Rewanże</label>
-        <input type="checkbox" name="revange_group">
+        <input type="checkbox" name="revange_group" style='width: 30px'>
         <label for='win_points'>Punkty za wygraną</label>
         <input class="number" type="number" name="win_points" min='1' max='100' value="3">
         <label for='draw_points'>Punkty za remis</label>

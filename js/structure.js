@@ -75,6 +75,7 @@ class Group {
     promotedQtt = null; //color table rows?!
     matches = [];       //important keys of array - to identify match!?
     table = [];         //array that contains teams, points, goals
+    promoted = [];      //2D array with team and (reference or copy?) to next stage  
 
 
     //FUNCTIONS
@@ -218,6 +219,16 @@ class Group {
         return promoted;
     }
 
+    getPromoted() {
+        let teams = this.promoteTeams();
+        let arr = [];
+        for (let i = 0; i < teams.length; i++) {
+            arr[i] = [];
+            arr[i][0] = teams[i];
+            arr[i][1];
+        }
+    }
+
     constructor(name, teamsQtt, promotedQtt, returnGame) {
         this.name = name;
         this.teamsQtt = teamsQtt;
@@ -253,13 +264,12 @@ class Match {
     away = null;
     mode = null; //0-not_tarted;1-started;2-finished
     result = {
-        home: null,
-        away: null,
+        home: "",
+        away: "",
     }; //[0]-home;[1]-away
 
     startMatch() {
         if (this.mode == 2) {
-            //alert('ten mecz już się zakończył!');
             console.log('ten mecz już się zakończył!');
         } else {
             this.mode = 1;
@@ -277,50 +287,6 @@ class Match {
         }
         return false;
     }
-
-    // goalValidity() {
-    //     if (this.mode == 1) {
-    //         return true;
-    //     } else if (this.mode == 0) {
-    //         console.log('Mecz się nie rozpoczął');
-    //     } else if (this.mode == 2) {
-    //         console.log('Mecz się już zaokńczył');
-    //     }
-    //     return false;
-    // }
-
-    // goalHome() {
-    //     if (this.goalValidity) {
-    //         this.result.home++;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // goalAway() {
-    //     if (this.goalValidity) {
-    //         this.result.away++;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // lessHome() {
-    //     if (this.goalValidity) {
-    //         this.result.home--;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // lessAway() {
-    //     if (this.goalValidity) {
-    //         this.result.away--;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
 
     constructor(home, away) {
         this.home = home;
