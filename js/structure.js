@@ -51,9 +51,6 @@ class Tournament {
                 add = 0;
             }
             //how many teams should to be in particular group
-            console.log('first round: ' + this.firstRound);
-            console.log('groupQtt: ' + this.groupsQtt);
-            console.log('promoted: ' + (this.firstRound * 2 / this.groupsQtt));
             let group = new Group(String.fromCharCode(65 + i), Math.floor(this.teamsQtt / this.groupsQtt) + add, (this.firstRound * 2 / this.groupsQtt), this.returnGameGroup);
             this.groups.push(group);
 

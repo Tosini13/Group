@@ -9,6 +9,12 @@
 </head>
 
 <body>
+    <div id='loading'>
+        <div>
+            <i id='loadingItem' class="icon-soccer-ball"></i>
+            Loading...
+        </div>
+    </div>
     <section id='formCreation'>
         <label for='name'>Nazwa turnieju</label>
         <input class="text" type="text" name="name" placeholder="nazwa turnieju">
@@ -57,6 +63,11 @@
 
     <script src="js/structure.js" type='text/javascript'></script>
     <script src="js/group.js" type='text/javascript'></script>
+    <script>
+        window.onload = function() {
+            document.getElementById('loading').style.display = 'none';
+        }
+    </script>
     <!-- JavaScript -->
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->

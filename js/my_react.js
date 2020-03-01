@@ -217,9 +217,15 @@ class GroupShow extends React.Component {
         switch (this.props.mode) {
             case 'table':
                 //TABLE
-                this.table = this.props.group.table.map((item, key) =>
-                    <tr><td>{item.team.name}</td><td>{item.points}</td><td>{item.goalsScored}</td><td>{item.goalsLost}</td></tr>
-                );
+                let promotionCounter = 0;
+                this.table = this.props.group.table.map((item, key) => {
+                    this.tablePromoted = '';
+                    if (promotionCounter < this.props.group.promotedQtt) {
+                        this.tablePromoted += ' tablePromoted';
+                    }
+                    promotionCounter++;
+                    return <tr className={this.tablePromoted}><td>{item.team.name}</td><td>{item.points}</td><td>{item.goalsScored}</td><td>{item.goalsLost}</td></tr>
+                });
                 return (
                     < div className='table' >
                         <table>
@@ -263,7 +269,7 @@ class GroupShow extends React.Component {
                 //PROMOTED TEAMS
                 let arr = this.props.group.promoteTeams();
                 this.teams = arr.map((item, key) =>
-                    <li><TeamShow team={item} rights={false} /></li>
+                    <li className='promotedTeam'><TeamShow team={item} rights={false} /></li>
                 );
                 return (
                     <div className='promoted'>
