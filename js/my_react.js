@@ -210,7 +210,6 @@ class MatchShow extends React.Component {
 class GroupShow extends React.Component {
     constructor(props) {
         super(props);
-        this.rights = props.rights;
     }
 
     render() {
@@ -222,7 +221,7 @@ class GroupShow extends React.Component {
                     <tr><td>{item.team.name}</td><td>{item.points}</td><td>{item.goalsScored}</td><td>{item.goalsLost}</td></tr>
                 );
                 return (
-                    <div className='table'>
+                    < div className='table' >
                         <table>
                             <thead><tr><th>Zespół</th><th>punkty</th><th>strzelone</th><th>stracone</th></tr></thead>
                             <tbody>
@@ -236,7 +235,7 @@ class GroupShow extends React.Component {
                 //MATCH LIST
                 this.matches = this.props.group.matches.map((item, key) =>
                     <li>
-                        <MatchShow match={item} rights={this.rights} />
+                        <MatchShow match={item} rights={this.props.rights} />
                     </li>
                 );
                 return (
@@ -250,7 +249,7 @@ class GroupShow extends React.Component {
             case 'teams':
                 //TEAMS LIST
                 this.teams = this.props.group.table.map((item, key) =>
-                    <li><TeamShow team={item.team} rights={this.rights} /></li>
+                    <li><TeamShow team={item.team} rights={this.props.rights} /></li>
                 );
                 return (
                     <div className='teams'>
@@ -285,15 +284,24 @@ class TournamentShow extends React.Component {
         this.state = {
             groupMode: 'table',
             groupCurrent: this.props.tournament.groups[0], //current group to display - default first
-            rights: this.props.rights,
+            groupName: this.props.tournament.groups[0].name,
         }
         this.changeGroup = this.changeGroup.bind(this);
+        this.changeGroupName = this.changeGroupName.bind(this);
+    }
+
+    changeGroupName(event) {
+        if (this.props.rights === 'EDIT') {
+            this.setState({ groupName: event.target.value });
+            this.state.groupCurrent.name = event.target.value;
+        }
     }
 
     changeGroup(event) {
         this.setState({
             groupCurrent: this.props.tournament.groups[event.target.value],
-            groupMode: 'table'
+            groupMode: 'table',
+            groupName: this.props.tournament.groups[event.target.value].name,
         });
     }
 
@@ -303,19 +311,36 @@ class TournamentShow extends React.Component {
             <option value={key}>{item.name}</option>
         );
 
+        // FOR GROUP NAME
+        switch (this.props.rights) {
+            case 'EDIT':
+                this.piece = <a onClick={this.saveChanges}></a>
+                this.inputMode = ''
+                break;
+            default:
+                this.piece = '';
+                this.inputMode = 'readonly';
+        }
+        this.groupName =
+            <div>
+                <input className="groupName" type='text' value={this.state.groupName} onChange={this.changeGroupName} />
+                {this.piece}
+            </div>
+
         return (
             <div className="group">
                 <h2>{this.props.tournament.name}</h2>
                 <select onChange={this.changeGroup}>
                     {this.groups}
                 </select>
+                {this.groupName}
                 <ul>
                     <li><a onClick={() => this.setState({ groupMode: 'teams' })}>Drużyny</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'table' })}>Tabela</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'matches' })}>Mecze</a></li>
                     <li><a onClick={() => this.setState({ groupMode: 'promote' })}>Awans</a></li>
                 </ul>
-                <GroupShow group={this.state.groupCurrent} mode={this.state.groupMode} rights={this.state.rights} />
+                <GroupShow group={this.state.groupCurrent} mode={this.state.groupMode} rights={this.props.rights} />
             </div>
         );
     }
@@ -323,7 +348,7 @@ class TournamentShow extends React.Component {
 
 class ManagerShow extends React.Component {
     tournament = null;
-    rights = 'EDIT';
+    // rights = 'EDIT';
 
     groupInit() {
         var no_teams = document.getElementsByName('no_teams')[0].value;
@@ -339,7 +364,7 @@ class ManagerShow extends React.Component {
         this.groupInit();
 
         return (
-            <TournamentShow tournament={this.tournament} rights={this.rights} />
+            <TournamentShow tournament={this.tournament} rights={this.props.rights} />
         );
     }
 }

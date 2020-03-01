@@ -47,7 +47,7 @@
             <option value="8">Finał, Półfinały, Ćwierćfinały, 1/16</option>
             <option value="16">Finał, Półfinały, Ćwierćfinały, 1/16, 1/32</option>
         </select>
-        <a class="button mobileWholeWidth" href='#' onclick="createGroup()">Dalej</a>
+        <a class="button mobileWholeWidth" href='#' onclick="createGroup('EDIT')">Dalej</a>
     </section>
 
     <section id='dashboardGroups'>
@@ -57,11 +57,6 @@
 
     <script src="js/structure.js" type='text/javascript'></script>
     <script src="js/group.js" type='text/javascript'></script>
-    <script>
-        $(document).ready(function() {
-            changeIcon();
-        });
-    </script>
     <!-- JavaScript -->
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
